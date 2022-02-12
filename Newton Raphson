@@ -1,0 +1,64 @@
+/**************************************
+Escuela Colombiana de ingeniería Julio Garavito
+Mateo Felipe Umaña - Arthur Stink Paipilla
+Paula Rodriguez Gonzalez - Paul Sebastian Romero
+Trabajo miercoles 16 de febrero
+***************************************/
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]){	//los argumentos seran de la forma file.bin x0 e e1 MAX_ITER a4 a3 a2 a1 a0
+
+	double x0 = 0.0,func = 0.0, derivada = 0.0, e1= 0.0, e = 0.0; //e1 es el criterio de exactitud y e es el criterio de convergencia
+	double x1 = 0.0, conver = 0.0;
+	double a0 = 0.0, a1 = 0.0, a2 = 0.0, a3 = 0.0, a4 = 0.0;   //Declaracion de los coeficientes de la función
+	int max_iter = 0, iteraciones = 0;
+	if (argc != 10){
+		printf("\n\n======================================================================\n");
+		printf("\tIngreso la cantidad incorrecta de argumentos al ejecutar el programa.\n");
+		printf("\t\tPor favor corrigalo e intente de nuevo.");
+		printf("\n======================================================================\n\n");
+		exit(1);
+	}else{
+		printf("\n\n>>>Este programa consiste en implementar el método de Newton Raphson para hallar");
+    	printf(" las raices de la funcion que agrego con los parametros del ejecutable de la forma:");
+		printf("\n\n\tf(x)= a4*x**4 + a3*x**3 + a2*x**2 + a1*x + a0\n\n");
+		printf("=============================================================");
+		printf("\n   i\t\t     xi\t\t   |f(xi)|\t  |xi_1-xi|\n");
+		printf("=============================================================");
+    	
+		x0 = atof(argv[1]);
+		e = atof(argv[2]); e1 = atof(argv[3]);
+		max_iter = atoi(argv[4]);
+		a4 = atof(argv[5]); a3 = atof(argv[6]); a2 = atof(argv[7]);
+		a1 = atof(argv[8]); a0 = atof(argv[9]);
+
+		func = a4*pow(x0,4) + a3*pow(x0,3) + a2*pow(x0,2) + a1*x0 + a0;
+		derivada = 4*a4*pow(x0,3) + 3*a3*pow(x0,2) +2*a2*x0 + a1;
+		x1 = x0 - func/derivada;
+		conver = fabs(x0 - x1);
+    	printf("\n   %d\t\t%.10lf\t%.10lf\t%.10lf",iteraciones,x0,fabs(func),conver);
+		iteraciones++;
+		x0 = x1;
+
+		while(iteraciones <= max_iter && conver > e && fabs(func) > e1){//La idea es que salga del while si y solo si ya se cumplio los criterios o se acabo las iteraciones
+    		printf("\n   %d\t\t%.10lf\t%.10lf\t%.10lf",iteraciones,x0,fabs(func),conver);
+			func = a4*pow(x0,4) + a3*pow(x0,3) + a2*pow(x0,2) + a1*x0 + a0;
+			if(func == 0){                 //si f ya es cero con X0 no hay nesecidad de iterar
+				iteraciones = max_iter + 1;       //con esto no se entraria al while
+			}
+			derivada = 4*a4*pow(x0,3) + 3*a3*pow(x0,2) +2*a2*x0 + a1;
+			x1 = x0 - func/derivada;
+			iteraciones++;
+        	conver = fabs(x0 - x1);
+			x0 = x1;
+		}
+		printf("\n=============================================================");
+		printf("\n\n\n-Se obtuvo 	un criterio de exactitud de %.10lf", func);
+		printf("\n-Se realizaron %d iteraciones", iteraciones-1);
+		printf("\n-Obteniendo un cero en x = %.10lf\n\n", x0);
+	}
+
+}
